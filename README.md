@@ -11,9 +11,10 @@ All information about your saved tracks will be saved to `saved_tracks.json`.
 
 ### Instructions
 
-1. `export SPOTIFY_CLIENT_ID=... SPOTIFY_CLIENT_SECRET=...`
-2. `go build`
-3. `./spotifybackup`
+1. Create a [Spotify app](https://developer.spotify.com/my-applications/#!/applications) and add `http://localhost:5000` as a Redirect URI
+2. `export SPOTIFY_CLIENT_ID=... SPOTIFY_CLIENT_SECRET=...`
+3. `go build`
+4. `./spotifybackup`
 
 
 ### Todo
