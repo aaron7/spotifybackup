@@ -80,7 +80,6 @@ func getAllItems(client *http.Client, url string) ([]interface{}, error) {
 		itemsJSON = append(itemsJSON, pagingObject.Items...)
 		nextURL = pagingObject.Next
 	}
-
 	return itemsJSON, nil
 }
 
