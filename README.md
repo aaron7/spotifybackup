@@ -1,7 +1,7 @@
 spotifybackup
 =============
 
-spotifybackup is a simple command line tool to backup your spotify saved tracks
+spotifybackup is a simple command line tool to backup your Spotify saved tracks
 and playlists.
 
 This application uses [go-oauth2webflow](https://github.com/aaron7/go-oauth2webflow)
