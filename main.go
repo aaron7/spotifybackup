@@ -76,7 +76,7 @@ func getAllItems(client *http.Client, url string) ([]interface{}, error) {
 			return itemsJSON, err
 		}
 
-		// Add items to list
+		// Extend items and set next url
 		itemsJSON = append(itemsJSON, pagingObject.Items...)
 		nextURL = pagingObject.Next
 	}
