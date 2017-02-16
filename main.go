@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/aaron7/go-oauth2webflow"
+	oauth2webflow "github.com/aaron7/go-oauth2webflow"
 	"golang.org/x/oauth2"
 )
 
