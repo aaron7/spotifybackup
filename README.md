@@ -1,5 +1,6 @@
 spotifybackup
 =============
+[![Build Status](https://travis-ci.org/aaron7/spotifybackup.svg?branch=master)](https://travis-ci.org/aaron7/spotifybackup)
 
 spotifybackup is a simple command line tool to backup your Spotify saved tracks
 and playlists.
