@@ -1,0 +1,21 @@
+spotifybackup
+=============
+
+spotifybackup is a simple command line tool to backup your spotify saved tracks
+and playlists.
+
+This application uses [go-oauth2webflow](https://github.com/aaron7/go-oauth2webflow)
+to authenticate with Spotify automatically through your system browser.
+
+### Instructions
+
+1. `export SPOTIFY_CLIENT_ID=... SPOTIFY_CLIENT_SECRET=...`
+2. `go build`
+3. `./spotifybackup`
+
+### Todo
+
+- Export playlists (not just saved tracks)
+- Tests
+
+Note: created this project as part of learning go
