@@ -7,7 +7,7 @@ and playlists.
 This application uses [go-oauth2webflow](https://github.com/aaron7/go-oauth2webflow)
 to authenticate with Spotify automatically through your system browser.
 
-All information about your saved tracks will be saved to `saved_tracks.json`.
+All information about your saved tracks will be saved to a file called `saved_tracks.json`.
 
 ### Instructions
 
