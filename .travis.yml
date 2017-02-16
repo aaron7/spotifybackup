@@ -1,7 +1,7 @@
 language: go
 go:
   - 1.7.x
-  - release
+  - master
 
 script:
  - go test -v ./...
