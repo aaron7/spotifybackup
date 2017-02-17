@@ -1,9 +1,10 @@
-package main
+package utils_test
 
 import (
 	"net/http"
 	"testing"
 
+	"github.com/aaron7/spotifybackup/utils"
 	"github.com/stretchr/testify/assert"
 	gock "gopkg.in/h2non/gock.v1"
 )
@@ -17,7 +18,7 @@ func Test_getAllItems__single_page(t *testing.T) {
 		JSON(`{"items": [{"track": "1"}, {"track": "2"}]}`)
 
 	client := &http.Client{}
-	items, err := getAllItems(client, "https://api.spotify.com/v1/me/tracks")
+	items, err := utils.GetAllItems(client, "https://api.spotify.com/v1/me/tracks")
 
 	assert.Nil(t, err)
 	assert.Equal(t, []interface{}(
@@ -48,7 +49,7 @@ func Test_getAllItems__multiple_pages(t *testing.T) {
 		JSON(`{"items": [{"track": "3"}, {"track": "4"}]}`)
 
 	client := &http.Client{}
-	items, err := getAllItems(client, "https://api.spotify.com/v1/me/tracks")
+	items, err := utils.GetAllItems(client, "https://api.spotify.com/v1/me/tracks")
 
 	assert.Nil(t, err)
 	assert.Equal(t, []interface{}(
@@ -69,14 +70,14 @@ func Test_getAllItems__http_status_not_ok(t *testing.T) {
 		Reply(400)
 
 	client := &http.Client{}
-	_, err := getAllItems(client, "https://api.spotify.com/v1/me/tracks")
+	_, err := utils.GetAllItems(client, "https://api.spotify.com/v1/me/tracks")
 
 	assert.Contains(t, err.Error(), "returned status 400 instead of 200")
 }
 
 func Test_getAllItems__invalid_url(t *testing.T) {
 	client := &http.Client{}
-	_, err := getAllItems(client, "invalid")
+	_, err := utils.GetAllItems(client, "invalid")
 
 	assert.Contains(t, err.Error(), "unsupported protocol scheme")
 }
@@ -90,7 +91,7 @@ func Test_getAllItems__invalid_json(t *testing.T) {
 		JSON(`{"invalid"}`)
 
 	client := &http.Client{}
-	_, err := getAllItems(client, "https://api.spotify.com/v1/me/tracks")
+	_, err := utils.GetAllItems(client, "https://api.spotify.com/v1/me/tracks")
 
 	assert.Contains(t, err.Error(), "invalid character '}' after object key")
 }
