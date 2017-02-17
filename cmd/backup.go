@@ -46,7 +46,7 @@ func backupFunc(cmd *cobra.Command, args []string) {
 	client := conf.Client(ctx, token)
 
 	// Get saved tracks
-	savedTracks, err := utils.GetAllItems(client, "https://api.spotify.com/v1/me/tracks")
+	savedTracks, err := utils.GetAllItems(client, "https://api.spotify.com/v1/me/tracks?limit=50")
 	if err != nil {
 		log.Fatal(err)
 	}
