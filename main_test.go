@@ -60,3 +60,37 @@ func Test_getAllItems__multiple_pages(t *testing.T) {
 		},
 	), items)
 }
+
+func Test_getAllItems__http_status_not_ok(t *testing.T) {
+	defer gock.Off()
+
+	gock.New("https://api.spotify.com").
+		Get("/v1/me/tracks").
+		Reply(400)
+
+	client := &http.Client{}
+	_, err := getAllItems(client, "https://api.spotify.com/v1/me/tracks")
+
+	assert.Contains(t, err.Error(), "returned status 400 instead of 200")
+}
+
+func Test_getAllItems__invalid_url(t *testing.T) {
+	client := &http.Client{}
+	_, err := getAllItems(client, "invalid")
+
+	assert.Contains(t, err.Error(), "unsupported protocol scheme")
+}
+
+func Test_getAllItems__invalid_json(t *testing.T) {
+	defer gock.Off()
+
+	gock.New("https://api.spotify.com").
+		Get("/v1/me/tracks").
+		Reply(200).
+		JSON(`{"invalid"}`)
+
+	client := &http.Client{}
+	_, err := getAllItems(client, "https://api.spotify.com/v1/me/tracks")
+
+	assert.Contains(t, err.Error(), "invalid character '}' after object key")
+}
