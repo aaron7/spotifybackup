@@ -15,9 +15,10 @@ information stored in each playlist.
 ### Instructions
 
 1. Create a [Spotify app](https://developer.spotify.com/my-applications/#!/applications) and add `http://localhost:5000` as a Redirect URI
-2. `export SPOTIFY_CLIENT_ID=... SPOTIFY_CLIENT_SECRET=...`
-3. `go build`
-4. `./spotifybackup`
+2. `export SPOTIFY_CLIENT_ID=... SPOTIFY_CLIENT_SECRET=...` (can save this in .bashrc/.zshrc)
+3. `go get -v github.com/aaron7/spotifybackup`
+4. `go install github.com/aaron7/spotifybackup`
+5. run `spotifybackup` if `$GOPATH/bin` is in your path
 
 
 ### Todo
