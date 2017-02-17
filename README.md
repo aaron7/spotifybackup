@@ -21,6 +21,19 @@ information stored in each playlist.
 5. run `spotifybackup` if `$GOPATH/bin` is in your path
 6. run `spotifybackup info` to get information about the backup
 
+### Example
+The following took 49 seconds to backup 213 [playlist objects](https://developer.spotify.com/web-api/object-model/#playlist-object-full)
+and 28,096 [full track objects](https://developer.spotify.com/web-api/object-model/#track-object-full):
+```bash
+> spotifybackup
+(progress printed here)
+> spotifybackup info
+Last backup: 2017-02-17T23:45:59+0000
+Saved tracks: 1908
+Playlists: 213 with 26188 tracks
+Unique tracks across savedTracks and playlists: 23138
+```
+
 ### Todo
 
 - Tests
