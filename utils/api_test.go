@@ -9,7 +9,7 @@ import (
 	gock "gopkg.in/h2non/gock.v1"
 )
 
-func Test_getAllItems__single_page(t *testing.T) {
+func Test_GetAllItems__single_page(t *testing.T) {
 	defer gock.Off()
 
 	gock.New("https://api.spotify.com").
@@ -29,7 +29,7 @@ func Test_getAllItems__single_page(t *testing.T) {
 	), items)
 }
 
-func Test_getAllItems__multiple_pages(t *testing.T) {
+func Test_GetAllItems__multiple_pages(t *testing.T) {
 	defer gock.Off()
 
 	// Mock first request
@@ -62,7 +62,7 @@ func Test_getAllItems__multiple_pages(t *testing.T) {
 	), items)
 }
 
-func Test_getAllItems__http_status_not_ok(t *testing.T) {
+func Test_GetAllItems__http_status_not_ok(t *testing.T) {
 	defer gock.Off()
 
 	gock.New("https://api.spotify.com").
@@ -75,14 +75,14 @@ func Test_getAllItems__http_status_not_ok(t *testing.T) {
 	assert.Contains(t, err.Error(), "returned status 400 instead of 200")
 }
 
-func Test_getAllItems__invalid_url(t *testing.T) {
+func Test_GetAllItems__invalid_url(t *testing.T) {
 	client := &http.Client{}
 	_, err := utils.GetAllItems(client, "invalid")
 
 	assert.Contains(t, err.Error(), "unsupported protocol scheme")
 }
 
-func Test_getAllItems__invalid_json(t *testing.T) {
+func Test_GetAllItems__invalid_json(t *testing.T) {
 	defer gock.Off()
 
 	gock.New("https://api.spotify.com").
