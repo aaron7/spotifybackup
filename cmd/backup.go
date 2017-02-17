@@ -46,40 +46,51 @@ func backupFunc(cmd *cobra.Command, args []string) {
 	client := conf.Client(ctx, token)
 
 	// Get saved tracks
-	savedTracks, err := utils.GetAllItems(client, "https://api.spotify.com/v1/me/tracks?limit=50")
+	_savedTracks, err := utils.GetAllItems(client, "https://api.spotify.com/v1/me/tracks?limit=50")
 	if err != nil {
 		log.Fatal(err)
 	}
+	// Decode savedTracks []interface{} as []trackObject
+	var savedTracks []trackObject
+	err = mapstructure.Decode(_savedTracks, &savedTracks)
+	if err != nil {
+		log.Fatal("there was an error decoding _savedTracks to []trackObject")
+	}
 
 	// Get playlists
-	playlists, err := utils.GetAllItems(client, "https://api.spotify.com/v1/me/playlists")
+	_playlists, err := utils.GetAllItems(client, "https://api.spotify.com/v1/me/playlists")
 	if err != nil {
 		log.Fatal(err)
+	}
+	// Decode playlists []interface{} as []playlistObject
+	var playlists []playlistObject
+	err = mapstructure.Decode(_playlists, &playlists)
+	if err != nil {
+		log.Fatal("there was an error decoding _playlists to []playlistObject")
 	}
 
 	// Fetch tracks for each playlist
 	var playlistsWithTracks []playlistObject
 	for _, playlist := range playlists {
-		// Decode interface{} as playlistObject
-		var playlistObject playlistObject
-		err := mapstructure.Decode(playlist, &playlistObject)
-		if err != nil {
-			log.Fatal("there was an error decoding the playlist to a playlistObject")
-		}
-
 		// Fetch tracks for playlist
-		tracksURL := playlistObject.Tracks.Href
-		tracks, err := utils.GetAllItems(client, tracksURL)
+		tracksURL := playlist.Tracks.Href
+		_tracks, err := utils.GetAllItems(client, tracksURL)
 		if err != nil {
 			log.Fatal(err)
 		}
+		// Decode tracks []interface{} as []trackObject
+		var tracks []trackObject
+		err = mapstructure.Decode(_tracks, &tracks)
+		if err != nil {
+			log.Fatal("there was an error decoding _tracks to []trackObject")
+		}
 
 		// Set FetchedTracks and append playlistObject to playlistsWithTracks
-		playlistObject.FetchedTracks = tracks
-		playlistsWithTracks = append(playlistsWithTracks, playlistObject)
+		playlist.FetchedTracks = tracks
+		playlistsWithTracks = append(playlistsWithTracks, playlist)
 	}
 
-	// Save the savedTracks and playlists in a json file
+	// Encode backup
 	backup := backupFormat{
 		BackupTime:  time.Now().Format("2006-01-02T15:04:05-0700"),
 		SavedTracks: savedTracks,
@@ -90,6 +101,7 @@ func backupFunc(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
+	// Save the backup to a JSON file
 	err = ioutil.WriteFile("spotify_backup.json", backupJSON, 0644)
 	if err != nil {
 		log.Fatal(err)
@@ -115,14 +127,40 @@ type playlistObject struct {
 	Tracks        struct {
 		Href string `json:"href"`
 	} `json:"tracks"`
-	FetchedTracks []interface{} `json:"fetchedTracks"`
+	FetchedTracks []trackObject `json:"fetchedTracks"`
 	Type          string        `json:"type"`
 	URI           string        `json:"uri"`
 }
 
+type fullTrackObject struct {
+	Album            interface{}   `json:"album"`
+	Artists          []interface{} `json:"artists"`
+	AvailableMarkets []string      `json:"available_markets"`
+	DiscNumber       int           `json:"disc_number"`
+	DurationMs       int           `json:"duration_ms"`
+	Explicit         bool          `json:"explicit"`
+	ExternalIds      interface{}   `json:"external_ids"`
+	ExternalUrls     interface{}   `json:"external_urls"`
+	Href             string        `json:"href"`
+	ID               string        `json:"id"`
+	Name             string        `json:"name"`
+	Popularity       int           `json:"popularity"`
+	PreviewURL       string        `json:"preview_url"`
+	TrackNumber      int           `json:"track_number"`
+	Type             string        `json:"type"`
+	URI              string        `json:"uri"`
+}
+
+type trackObject struct {
+	AddedAt string          `json:"added_at"`
+	AddedBy interface{}     `json:"added_by"`
+	IsLocal bool            `json:"is_local"`
+	Track   fullTrackObject `json:"track"`
+}
+
 type backupFormat struct {
 	BackupTime  string           `json:"backupTime"`
-	SavedTracks []interface{}    `json:"savedTracks"`
+	SavedTracks []trackObject    `json:"savedTracks"`
 	Playlists   []playlistObject `json:"playlists"`
 }
 
