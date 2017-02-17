@@ -78,7 +78,7 @@ func backupFunc(cmd *cobra.Command, args []string) {
 		playlistsWithTracks = append(playlistsWithTracks, playlistObject)
 	}
 
-	// Save the savedTracks as json
+	// Save the savedTracks and playlists in a json file
 	backup := backupFormat{
 		SavedTracks: savedTracks,
 		Playlists:   playlistsWithTracks,
