@@ -121,9 +121,9 @@ type playlistObject struct {
 }
 
 type backupFormat struct {
-	BackupTime  string      `json:"backupTime"`
-	SavedTracks interface{} `json:"savedTracks"`
-	Playlists   interface{} `json:"playlists"`
+	BackupTime  string           `json:"backupTime"`
+	SavedTracks []interface{}    `json:"savedTracks"`
+	Playlists   []playlistObject `json:"playlists"`
 }
 
 func init() {
