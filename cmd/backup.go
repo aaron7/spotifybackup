@@ -9,6 +9,7 @@ import (
 
 	oauth2webflow "github.com/aaron7/go-oauth2webflow"
 	"github.com/aaron7/spotifybackup/utils"
+	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
 )
@@ -25,7 +26,11 @@ func backupFunc(cmd *cobra.Command, args []string) {
 	conf := &oauth2.Config{
 		ClientID:     os.Getenv("SPOTIFY_CLIENT_ID"),
 		ClientSecret: os.Getenv("SPOTIFY_CLIENT_SECRET"),
-		Scopes:       []string{"user-library-read"},
+		Scopes: []string{
+			"user-library-read",
+			"playlist-read-private",
+			"playlist-read-collaborative",
+		},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  "https://accounts.spotify.com/authorize",
 			TokenURL: "https://accounts.spotify.com/api/token",
@@ -45,16 +50,77 @@ func backupFunc(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
-	savedTracksJSON, err := json.Marshal(savedTracks)
+	// Get playlists
+	playlists, err := utils.GetAllItems(client, "https://api.spotify.com/v1/me/playlists")
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Fetch tracks for each playlist
+	var playlistsWithTracks []playlistObject
+	for _, playlist := range playlists {
+		// Decode interface{} as playlistObject
+		var playlistObject playlistObject
+		err := mapstructure.Decode(playlist, &playlistObject)
+		if err != nil {
+			log.Fatal("there was an error decoding the playlist to a playlistObject")
+		}
+
+		// Fetch tracks for playlist
+		tracksURL := playlistObject.Tracks.Href
+		tracks, err := utils.GetAllItems(client, tracksURL)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Set FetchedTracks and append playlistObject to playlistsWithTracks
+		playlistObject.FetchedTracks = tracks
+		playlistsWithTracks = append(playlistsWithTracks, playlistObject)
+	}
+
 	// Save the savedTracks as json
-	err = ioutil.WriteFile("saved_tracks.json", savedTracksJSON, 0644)
+	backup := backupFormat{
+		SavedTracks: savedTracks,
+		Playlists:   playlistsWithTracks,
+	}
+	backupJSON, err := json.Marshal(backup)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	err = ioutil.WriteFile("spotify_backup.json", backupJSON, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+type playlistWithoutTracksObject struct {
+	Tracks struct {
+		href string
+	} `json:"tracks"`
+}
+
+type playlistObject struct {
+	Collaborative bool          `json:"collaborative"`
+	ExternalUrls  interface{}   `json:"external_urls"`
+	Href          string        `json:"href"`
+	ID            string        `json:"id"`
+	Images        []interface{} `json:"images"`
+	Name          string        `json:"name"`
+	Owner         interface{}   `json:"owner"`
+	Public        bool          `json:"public"`
+	SnapshotID    string        `json:"snapshot_id"`
+	Tracks        struct {
+		Href string `json:"href"`
+	} `json:"tracks"`
+	FetchedTracks []interface{} `json:"fetchedTracks"`
+	Type          string        `json:"type"`
+	URI           string        `json:"uri"`
+}
+
+type backupFormat struct {
+	SavedTracks interface{} `json:"savedTracks"`
+	Playlists   interface{} `json:"playlists"`
 }
 
 func init() {
