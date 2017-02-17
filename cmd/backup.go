@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 
 	oauth2webflow "github.com/aaron7/go-oauth2webflow"
 	"github.com/aaron7/spotifybackup/utils"
@@ -80,6 +81,7 @@ func backupFunc(cmd *cobra.Command, args []string) {
 
 	// Save the savedTracks and playlists in a json file
 	backup := backupFormat{
+		BackupTime:  time.Now().Format("2006-01-02T15:04:05-0700"),
 		SavedTracks: savedTracks,
 		Playlists:   playlistsWithTracks,
 	}
@@ -119,6 +121,7 @@ type playlistObject struct {
 }
 
 type backupFormat struct {
+	BackupTime  string      `json:"backupTime"`
 	SavedTracks interface{} `json:"savedTracks"`
 	Playlists   interface{} `json:"playlists"`
 }
