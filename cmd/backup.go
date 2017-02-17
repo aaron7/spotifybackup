@@ -13,7 +13,6 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// backupCmd represents the backup command
 var backupCmd = &cobra.Command{
 	Use:   "backup",
 	Short: "Backup your Spotify saved tracks and playlists",
