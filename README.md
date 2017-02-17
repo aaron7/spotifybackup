@@ -19,7 +19,7 @@ information stored in each playlist.
 3. `go get -v github.com/aaron7/spotifybackup`
 4. `go install github.com/aaron7/spotifybackup`
 5. run `spotifybackup` if `$GOPATH/bin` is in your path
-
+6. run `spotifybackup info` to get information about the backup
 
 ### Todo
 
