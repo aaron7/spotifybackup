@@ -34,6 +34,15 @@ Playlists: 213 with 26188 tracks
 Unique tracks across savedTracks and playlists: 23138
 ```
 
+### Backup format (JSON)
+
+- `backupTime` - ISO 8601 e.g. `2006-01-02T15:04:05-0700`
+- `savedTracks` - list of [saved track objects](https://developer.spotify.com/web-api/object-model/#saved-track-object)
+(with [full track objects](https://developer.spotify.com/web-api/object-model/#track-object-full))
+- `playlists` - list of [simplified playlist objects](https://developer.spotify.com/web-api/object-model/#playlist-object-simplified)
+containing the extra field `fetchedTracks` of [playlist track objects](https://developer.spotify.com/web-api/object-model/#playlist-track-object)
+(with [full track objects](https://developer.spotify.com/web-api/object-model/#track-object-full))
+
 ### Todo
 
 - Tests
