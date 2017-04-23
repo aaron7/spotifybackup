@@ -21,7 +21,6 @@ func GetAllItems(client *http.Client, url string) ([]interface{}, error) {
 		if err != nil {
 			return itemsJSON, err
 		}
-		defer resp.Body.Close()
 
 		// If too many requests, wait for Retry-After time + 1 and try again
 		if resp.StatusCode == 429 {
@@ -47,6 +46,7 @@ func GetAllItems(client *http.Client, url string) ([]interface{}, error) {
 		if err != nil {
 			return itemsJSON, err
 		}
+		resp.Body.Close()
 
 		// Extend items and set next url
 		itemsJSON = append(itemsJSON, pagingObject.Items...)
